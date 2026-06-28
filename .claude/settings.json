@@ -1,0 +1,23 @@
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "8000",
+    "SUPERPOWERS_DISABLE_TELEMETRY": "false"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "echo \"ctx $(jq -r '.context_window.remaining_percentage // 100' < $CLAUDE_STATUS_INPUT)% | $(jq -r '.model.display_name // \"?\"' < $CLAUDE_STATUS_INPUT) | $(date +%H:%M)\""
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /path/to/project/.claude/hooks/bash-filter.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "_comment": "claude-code-router config. Start with: ccr code (instead of claude)",
+  "_docs": "https://github.com/musistudio/claude-code-router",
+
+  "LOG": true,
+  "LOG_LEVEL": "warn",
+  "API_TIMEOUT_MS": 600000,
+  "NON_INTERACTIVE_MODE": false,
+
+  "Providers": [
+    {
+      "name": "anthropic",
+      "api_base_url": "https://api.anthropic.com/v1/chat/completions",
+      "api_key": "$ANTHROPIC_API_KEY",
+      "models": [
+        "claude-sonnet-4-6",
+        "claude-haiku-4-5-20251001",
+        "claude-opus-4-6"
+      ]
+    },
+    {
+      "name": "openrouter",
+      "_comment": "Optional — for long-context tasks via Gemini. Add your key.",
+      "api_base_url": "https://openrouter.ai/api/v1/chat/completions",
+      "api_key": "$OPENROUTER_API_KEY",
+      "models": [
+        "google/gemini-2.5-pro-preview",
+        "anthropic/claude-sonnet-4-6"
+      ],
+      "transformer": {
+        "use": ["openrouter"]
+      }
+    },
+    {
+      "name": "deepseek",
+      "_comment": "Optional — ultra-cheap fallback for non-critical tasks.",
+      "api_base_url": "https://api.deepseek.com/chat/completions",
+      "api_key": "$DEEPSEEK_API_KEY",
+      "models": ["deepseek-chat"],
+      "transformer": {
+        "use": ["deepseek"],
+        "deepseek-chat": { "use": ["tooluse"] }
+      }
+    }
+  ],
+
+  "Router": {
+    "_comment": "Routing rules. Format: 'provider,model'",
+
+    "default": "anthropic,claude-sonnet-4-6",
+
+    "background": "anthropic,claude-haiku-4-5-20251001",
+    "_background_note": "File reads, grep, glob, research tasks → Haiku (3-5x cheaper)",
+
+    "think": "anthropic,claude-opus-4-6",
+    "_think_note": "Plan mode, architecture decisions, hard debugging → Opus",
+
+    "longContext": "openrouter,google/gemini-2.5-pro-preview",
+    "longContextThreshold": 60000,
+    "_longContext_note": "When context > 60K tokens, route to Gemini 2.5 Pro (1M window)"
+  }
+}

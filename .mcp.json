@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "token-savior": {
+      "command": "/path/to/.local/token-savior-venv/bin/token-savior",
+      "env": {
+        "WORKSPACE_ROOTS": "/path/to/your/project",
+        "TOKEN_SAVIOR_CLIENT": "claude-code",
+        "TOKEN_SAVIOR_PROFILE": "core"
+      }
+    }
+  }
+}
