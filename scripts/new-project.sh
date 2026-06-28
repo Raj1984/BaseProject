@@ -21,13 +21,20 @@ echo "[+] Creating new project: $PROJECT_NAME"
 echo "[+] Location: $TARGET_DIR"
 
 # Clone structure (not git clone — we want a fresh git history)
-rsync -a \
-  --exclude='.git' \
-  --exclude='node_modules' \
-  --exclude='__pycache__' \
-  --exclude='*.pyc' \
-  --exclude='.env' \
-  "$BASE_DIR/" "$TARGET_DIR/"
+if command -v rsync >/dev/null 2>&1; then
+  rsync -a \
+    --exclude='.git' \
+    --exclude='node_modules' \
+    --exclude='__pycache__' \
+    --exclude='*.pyc' \
+    --exclude='.env' \
+    "$BASE_DIR/" "$TARGET_DIR/"
+else
+  # Windows fallback: robocopy via PowerShell to avoid Git Bash path mangling
+  WIN_SRC="$(pwd -W)"
+  WIN_DST="$(echo "$TARGET_DIR" | sed 's|/c/|C:\\|; s|/|\\|g')"
+  powershell.exe -Command "robocopy '$WIN_SRC' '$WIN_DST' /E /XD '.git' 'node_modules' '__pycache__' /XF '*.pyc' '.env' /NFL /NDL /NJH /NJS /NC /NS" > /dev/null || true
+fi
 
 cd "$TARGET_DIR"
 
