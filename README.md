@@ -1,7 +1,7 @@
 # BaseProject
 
-**Universal base project template for Indian equity derivatives development.**  
-Clone this to start any new project in the `nifty_quant_lab` ecosystem.
+**Universal base project template for development.**  
+Clone this to start any new project in the `JobAISearch` ecosystem.
 
 ---
 
